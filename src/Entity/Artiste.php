@@ -38,10 +38,22 @@ class Artiste
      */
     private $albums;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Track", mappedBy="artiste", orphanRemoval=true)
+     */
+    private $tracks;
+
     public function __construct()
     {
         $this->albums = new ArrayCollection();
+        $this->tracks = new ArrayCollection();
     }
+
+    public function __toString()
+    {
+        return (string) $this->id;
+    }
+
 
     public function getId(): ?int
     {
@@ -109,6 +121,37 @@ class Artiste
             // set the owning side to null (unless already changed)
             if ($album->getArtiste() === $this) {
                 $album->setArtiste(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Track[]
+     */
+    public function getTracks(): Collection
+    {
+        return $this->tracks;
+    }
+
+    public function addTrack(Track $track): self
+    {
+        if (!$this->tracks->contains($track)) {
+            $this->tracks[] = $track;
+            $track->setArtiste($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrack(Track $track): self
+    {
+        if ($this->tracks->contains($track)) {
+            $this->tracks->removeElement($track);
+            // set the owning side to null (unless already changed)
+            if ($track->getArtiste() === $this) {
+                $track->setArtiste(null);
             }
         }
 
