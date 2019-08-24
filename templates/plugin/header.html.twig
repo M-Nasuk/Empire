@@ -1,0 +1,28 @@
+<header>
+    <nav>
+        <ul>
+            <li>
+                <a href="/artiste">Artiste</a>
+            </li>
+            <li>
+                <a href="/album">Album</a>
+            </li>
+            <li>
+                <a href="/track">Track</a>
+            </li>
+            <li>
+                <a href="/register">Inscription</a>
+            </li>
+            <li>
+                <a href="/login">Se Connecter</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+{% block headerStyle %}
+<style>
+    nav ul { display: flex; flex-direction: row; justify-content: space-around; }
+    nav ul li { list-style-type: none; }
+</style>
+{% endblock %}

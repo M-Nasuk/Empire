@@ -6,6 +6,34 @@
     <h1>Create new Track</h1>
 
     {{ include('track/_form.html.twig') }}
+    <select id="same-style">
+        <h2>Artiste du même style </h2>
+    </select>
 
     <a href="{{ path('track_index') }}">back to list</a>
+    <script>
+        fetch('{{ path('json') }}')
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log(data.data);
+                for (let art of data.data) {
+                    $('#same-style').append(`<option value="${art.id}"><a href="${art.href}"> ${art.name} </a></option>`);
+                }
+                // $('#track_artiste').change(function () {
+                //     $('#same-style').val(data.data[$('#track_artiste').val()-1].name);
+                // });
+                $('#same-style').change(function () {
+                    $('#track_artiste').val(data.data[$('#same-style').val()-1].id);
+                });
+            })
+            .catch(error => console.log(error));
+
+        let i;
+        // $('#track_artiste').change(function () {
+        //     $('#same-style').val(data.data[$('#track_artiste').val()].name);
+        // });
+        console.log(i);
+    </script>
 {% endblock %}

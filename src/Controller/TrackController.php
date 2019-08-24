@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Track;
 use App\Form\TrackType;
+use App\Repository\AlbumRepository;
+use App\Repository\ArtisteRepository;
 use App\Repository\TrackRepository;
 use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +31,7 @@ class TrackController extends AbstractController
     /**
      * @Route("/new", name="track_new", methods={"GET","POST"})
      */
-    public function new(Request $request, FileUploader $fileUploader): Response
+    public function new(Request $request, FileUploader $fileUploader, ArtisteRepository $artisteRepository): Response
     {
         $track = new Track();
         $form = $this->createForm(TrackType::class, $track);
@@ -54,29 +56,38 @@ class TrackController extends AbstractController
         return $this->render('track/new.html.twig', [
             'track' => $track,
             'form' => $form->createView(),
+            'artiste' => $artisteRepository->findAll()
         ]);
     }
 
     /**
      * @Route("/{id}", name="track_show", methods={"GET"})
      */
-    public function show(Track $track, TrackRepository $trackRepository): Response
+    public function show(Track $track, ArtisteRepository $artisteRepository, AlbumRepository $albumRepository): Response
     {
+
         return $this->render('track/show.html.twig', [
             'track' => $track,
-            'artiste' => $trackRepository->findArtist($track->getArtiste())
+            'artiste' => $artisteRepository->find($track->getArtiste()),
+            'album' => $track->getAlbum() ? $albumRepository->find($track->getAlbum()) : null
         ]);
     }
 
     /**
      * @Route("/{id}/edit", name="track_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Track $track): Response
+    public function edit(Request $request, Track $track, FileUploader $fileUploader): Response
     {
         $form = $this->createForm(TrackType::class, $track);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (isset($form['file'])) {
+                $file = $form['file']->getData();
+                $name = $form['name']->getData();
+                $newFile = $fileUploader->upload($file, $name);
+                $track->setFile($newFile);
+            }
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('track_index');
@@ -101,4 +112,6 @@ class TrackController extends AbstractController
 
         return $this->redirectToRoute('track_index');
     }
+
+
 }

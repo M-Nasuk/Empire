@@ -19,12 +19,21 @@
                 <td>{{ track.name }}</td>
             </tr>
             <tr>
+                <th>Album</th>
+                <td>{% if track.album is empty %}
+                        No Album
+                    {% else %}
+                        <a href="/album/{{ track.album }}" target="_blank">{{ album.name }}</a>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
                 <th>Duration</th>
                 <td>{{ track.duration ? track.duration|date('H:i:s') : '' }}</td>
             </tr>
             <tr>
                 <th>Artist</th>
-                <td><a href="/artiste/{{ track.artiste }}">{{ artiste[0].name }}</a></td>
+                <td><a href="/artiste/{{ track.artiste }}" target="_blank">{{ artiste.name }}</a></td>
             </tr>
             <tr>
                 <th>File</th>

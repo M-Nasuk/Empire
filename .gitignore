@@ -17,5 +17,5 @@
 ###> symfony/web-server-bundle ###
 /.web-server-pid
 ###< symfony/web-server-bundle ###
-/public/music
-/public/js/howler.js
+/public/music/
+/public/image/

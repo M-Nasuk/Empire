@@ -22,11 +22,24 @@ class FileUploader
     {
 
         try {
-            $newName = str_replace(" ", "_", $name).'.mp3';
-            $file->move(
-                $this->getTargetDirectory(),
-                $newName
-            );
+            $a = explode('.', $file->getClientOriginalName());
+            $e = end($a);
+            switch ($e) {
+                case 'mp3':
+                    $newName = str_replace(" ", "_", $name).'.mp3';
+                    $file->move(
+                        $this->getTargetDirectory().'/music/',
+                        $newName
+                    );
+                    break;
+                case 'jpeg':
+                    $newName = str_replace(" ", "_", $name).'.jpeg';
+                    $file->move(
+                        $this->getTargetDirectory().'/image/',
+                        $newName
+                    );
+                    break;
+            }
         } catch (FileException $e) {
             // ... handle exception if something happens during file upload
         }

@@ -4,6 +4,7 @@
 
 {% block body %}
     <h1>Album</h1>
+    <h2>{{ album.name }}</h2>
 
     <table class="table">
         <tbody>
@@ -14,6 +15,14 @@
             <tr>
                 <th>Name</th>
                 <td>{{ album.name }}</td>
+            </tr>
+            <tr>
+                <th>Picture</th>
+                <td><img src="/image/{{ album.picture | raw }}" /></td>
+            </tr>
+            <tr>
+                <th>Artist</th>
+                <td><a href="/artiste/{{ album.artiste }}" target="_blank">{{ artiste.name }}</a></td>
             </tr>
         </tbody>
     </table>
