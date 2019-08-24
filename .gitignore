@@ -17,5 +17,7 @@
 ###> symfony/web-server-bundle ###
 /.web-server-pid
 ###< symfony/web-server-bundle ###
-/public/music/
-/public/image/
+/public/music
+/public/music/*
+/public/image
+/public/image/*

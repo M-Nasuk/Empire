@@ -1,7 +1,3 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
-
-#json:
-#    path: /artiste/json
-#    controller: App\Controller\ArtisteController::jsonArtiste
