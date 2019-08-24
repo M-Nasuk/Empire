@@ -43,6 +43,11 @@ class Artiste
      */
     private $tracks;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $picture;
+
     public function __construct()
     {
         $this->albums = new ArrayCollection();
@@ -154,6 +159,18 @@ class Artiste
                 $track->setArtiste(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPicture(): ?string
+    {
+        return $this->picture;
+    }
+
+    public function setPicture(?string $picture): self
+    {
+        $this->picture = $picture;
 
         return $this;
     }

@@ -1,9 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Track{% endblock %}
-
+{% block js %}
+    <script src="{{ asset('js/audiojs/audio.min.js') }}"></script>
+{% endblock %}
 {% block body %}
     <h1>Track</h1>
+    <h2>{{ track.name }}</h2>
 
     <table class="table">
         <tbody>
@@ -21,7 +24,7 @@
             </tr>
             <tr>
                 <th>Artist</th>
-                <td><a href="/artiste/{{ track.artiste }}">{{ track.artiste }}</a> </td>
+                <td><a href="/artiste/{{ track.artiste }}">{{ artiste[0].name }}</a></td>
             </tr>
             <tr>
                 <th>File</th>
@@ -30,9 +33,17 @@
         </tbody>
     </table>
 
+
     <a href="{{ path('track_index') }}">back to list</a>
 
     <a href="{{ path('track_edit', {'id': track.id}) }}">edit</a>
 
     {{ include('track/_delete_form.html.twig') }}
+{#    <audio src={{ asset('music/lasgo_out_of_my_mind.mp3') }} preload="auto" />#}
+    <audio src=/music{{ asset(track.file) }} preload="auto" />
+    <script>
+        audiojs.events.ready(function() {
+            var as = audiojs.createAll();
+        });
+    </script>
 {% endblock %}

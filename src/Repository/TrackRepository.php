@@ -19,13 +19,14 @@ class TrackRepository extends ServiceEntityRepository
         parent::__construct($registry, Track::class);
     }
 
-    public function findId($value)
+    public function findArtist($value)
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.id = :val')
+            ->select('a.name')
+            ->innerJoin('App:Artiste', 'a')
+            ->andWhere('t.id = a.id')
+            ->andWhere('a.id = :val')
             ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
             ->getResult()
             ;

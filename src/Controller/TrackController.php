@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Track;
 use App\Form\TrackType;
 use App\Repository\TrackRepository;
+use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,7 +29,7 @@ class TrackController extends AbstractController
     /**
      * @Route("/new", name="track_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, FileUploader $fileUploader): Response
     {
         $track = new Track();
         $form = $this->createForm(TrackType::class, $track);
@@ -37,21 +38,11 @@ class TrackController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
 
-            $file = $form['file']->getData();
-
-            if ($file) {
-
-                try {
-                    $file->move(
-                        $this->getParameter('music_directory'),
-                        $file->getClientOriginalName()
-                    );
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
-                }
-                // updates the 'brochureFilename' property to store the PDF file name
-                // instead of its contents
-                $track->setFile($file->getClientOriginalName());
+            if (isset($form['file'])) {
+                $file = $form['file']->getData();
+                $name = $form['name']->getData();
+                $newFile = $fileUploader->upload($file, $name);
+                $track->setFile($newFile);
             }
             
             $entityManager->persist($track);
@@ -69,10 +60,11 @@ class TrackController extends AbstractController
     /**
      * @Route("/{id}", name="track_show", methods={"GET"})
      */
-    public function show(Track $track): Response
+    public function show(Track $track, TrackRepository $trackRepository): Response
     {
         return $this->render('track/show.html.twig', [
             'track' => $track,
+            'artiste' => $trackRepository->findArtist($track->getArtiste())
         ]);
     }
 
