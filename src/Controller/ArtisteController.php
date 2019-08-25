@@ -160,7 +160,8 @@ class ArtisteController extends AbstractController
     {
         return $this->render('track/show.html.twig', [
             'artiste' => $artiste,
-            'track' => $track
+            'track' => $track,
+            'album' => null
         ]);
     }
 

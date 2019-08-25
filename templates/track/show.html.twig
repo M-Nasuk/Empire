@@ -45,9 +45,11 @@
             {% endif %}
         </tbody>
     </table>
-
-    <a href="{{ path('artiste_album', {'id': artiste.id, 'album': album.id}) }}">back to album</a>
-
+    {% if album is not null %}
+        <a href="{{ path('artiste_album', {'id': artiste.id, 'album': album.id}) }}">back to album</a>
+    {% else %}
+        <a href="{{ path('artiste_show', {'id': artiste.id}) }}">back to artiste</a>
+    {% endif %}
     {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('track_index') }}">back to list</a>
         <a href="{{ path('track_edit', {'id': track.id}) }}">edit</a>
