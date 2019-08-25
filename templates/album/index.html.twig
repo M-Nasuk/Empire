@@ -8,20 +8,28 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th>Id</th>
+                {% else %}
+                    <th>N°</th>
+                {% endif %}
                 <th>Name</th>
-                <th>actions</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th>actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
         {% for album in albums %}
             <tr>
                 <td>{{ album.id }}</td>
-                <td>{{ album.name }}</td>
-                <td>
-                    <a href="{{ path('album_show', {'id': album.id}) }}">show</a>
-                    <a href="{{ path('album_edit', {'id': album.id}) }}">edit</a>
-                </td>
+                <td><a href="{{ path('album_show', {'id': album.id}) }}">{{ album.name }}</a></td>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <td>
+                        <a href="{{ path('album_show', {'id': album.id}) }}">show</a>
+                        <a href="{{ path('album_edit', {'id': album.id}) }}">edit</a>
+                    </td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>

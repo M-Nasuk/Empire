@@ -10,6 +10,11 @@ security:
             entity:
                 class: App\Entity\User
                 property: username
+
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_CUSTOMER, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_CUSTOMER: ROLE_USER
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -23,6 +28,7 @@ security:
                 path: app_logout
                 # where to redirect after logout
                 # target: app_any_route
+            access_denied_url: /artiste
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -35,3 +41,5 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: /album, roles: ROLE_ADMIN }
+        - { path: /track, roles: ROLE_ADMIN }

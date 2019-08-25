@@ -8,24 +8,33 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th>Id</th>
+                    {% else %}
+                    <th>N°</th>
+                {% endif %}
                 <th>Name</th>
                 <th>Duration</th>
-                <th>File</th>
-                <th>actions</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th>File</th>
+                    <th>actions</th>
+                {% endif %}
+
             </tr>
         </thead>
         <tbody>
         {% for track in tracks %}
             <tr>
                 <td>{{ track.id }}</td>
-                <td>{{ track.name }}</td>
+                <td><a href="{{ path('track_show', {'id': track.id}) }}">{{ track.name }}</a></td>
                 <td>{{ track.duration ? track.duration|date('H:i:s') : '' }}</td>
-                <td>{{ track.file }}</td>
-                <td>
-                    <a href="{{ path('track_show', {'id': track.id}) }}">show</a>
-                    <a href="{{ path('track_edit', {'id': track.id}) }}">edit</a>
-                </td>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <td>{{ track.file }}</td>
+                    <td>
+                        <a href="{{ path('track_show', {'id': track.id}) }}">show</a>
+                        <a href="{{ path('track_edit', {'id': track.id}) }}">edit</a>
+                    </td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>
@@ -34,6 +43,7 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('track_new') }}">Create new</a>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('track_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}

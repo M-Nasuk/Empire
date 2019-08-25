@@ -1,3 +1,13 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+
+register:
+  path: /register
+  controller: App\Controller\RegistrationController::register
+  methods: GET
+
+track:
+  path: /track
+  controller: App\Controller\TrackController::index
+  methods: GET

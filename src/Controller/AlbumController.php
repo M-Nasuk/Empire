@@ -6,6 +6,7 @@ use App\Entity\Album;
 use App\Form\AlbumType;
 use App\Repository\AlbumRepository;
 use App\Repository\ArtisteRepository;
+use App\Repository\TrackRepository;
 use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,11 +62,17 @@ class AlbumController extends AbstractController
     /**
      * @Route("/{id}", name="album_show", methods={"GET"})
      */
-    public function show(Album $album, ArtisteRepository $artisteRepository): Response
+    public function show(Album $album, ArtisteRepository $artisteRepository, TrackRepository $trackRepository): Response
     {
         return $this->render('album/show.html.twig', [
             'album' => $album,
             'artiste' => $artisteRepository->find($album->getArtiste()),
+            'tracks' => $trackRepository->createQueryBuilder('t')
+            ->select('t.id', 't.name')
+            ->where('t.album = :id')
+            ->setParameter('id', $album->getId())
+            ->getQuery()
+            ->getResult()
         ]);
     }
 

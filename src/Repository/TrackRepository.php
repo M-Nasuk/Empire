@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Album;
+use App\Entity\Artiste;
 use App\Entity\Track;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -19,14 +21,23 @@ class TrackRepository extends ServiceEntityRepository
         parent::__construct($registry, Track::class);
     }
 
-    public function findArtist($value)
+    public function tracksByArtist(Artiste $artiste)
     {
         return $this->createQueryBuilder('t')
-            ->select('a.name')
-            ->innerJoin('App:Artiste', 'a')
-            ->andWhere('t.id = a.id')
-            ->andWhere('a.id = :val')
-            ->setParameter('val', $value)
+            ->select('t.id', 't.name')
+            ->where('t.artiste = :id')
+            ->setParameter('id', $artiste->getId())
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function tracksByAlbum(Album $album)
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t.id', 't.name')
+            ->where('t.album = :id')
+            ->setParameter('id', $album->getId())
             ->getQuery()
             ->getResult()
             ;

@@ -8,6 +8,7 @@ use App\Repository\AlbumRepository;
 use App\Repository\ArtisteRepository;
 use App\Repository\TrackRepository;
 use App\Service\FileUploader;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,6 +63,7 @@ class TrackController extends AbstractController
 
     /**
      * @Route("/{id}", name="track_show", methods={"GET"})
+     * @Security("is_granted('ROLE_CUSTOMER')")
      */
     public function show(Track $track, ArtisteRepository $artisteRepository, AlbumRepository $albumRepository): Response
     {

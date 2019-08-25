@@ -10,49 +10,62 @@
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ track.id }}</td>
-            </tr>
+            {% if is_granted('ROLE_ADMIN') %}
+                <tr>
+                    <th>Id</th>
+                    <td>{{ track.id }}</td>
+                </tr>
+            {% endif %}
+
             <tr>
                 <th>Name</th>
                 <td>{{ track.name }}</td>
             </tr>
-            <tr>
-                <th>Album</th>
-                <td>{% if track.album is empty %}
-                        No Album
-                    {% else %}
-                        <a href="/album/{{ track.album }}" target="_blank">{{ album.name }}</a>
-                    {% endif %}
-                </td>
-            </tr>
+            {% if track.album %}
+                <tr>
+                    <th>Album</th>
+                    <td>
+                        <a href="/artiste/{{ artiste.id }}/{{ album.id }}">{{ album.name }}</a>
+                    </td>
+                </tr>
+            {% endif %}
             <tr>
                 <th>Duration</th>
                 <td>{{ track.duration ? track.duration|date('H:i:s') : '' }}</td>
             </tr>
             <tr>
                 <th>Artist</th>
-                <td><a href="/artiste/{{ track.artiste }}" target="_blank">{{ artiste.name }}</a></td>
+                <td><a href="/artiste/{{ artiste.id }}">{{ artiste.name }}</a></td>
             </tr>
-            <tr>
-                <th>File</th>
-                <td>{{ track.file }}</td>
-            </tr>
+            {% if is_granted('ROLE_ADMIN') %}
+                <tr>
+                    <th>File</th>
+                    <td>{{ track.file }}</td>
+                </tr>
+            {% endif %}
         </tbody>
     </table>
 
+    <a href="{{ path('artiste_album', {'id': artiste.id, 'album': album.id}) }}">back to album</a>
 
-    <a href="{{ path('track_index') }}">back to list</a>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('track_index') }}">back to list</a>
+        <a href="{{ path('track_edit', {'id': track.id}) }}">edit</a>
+        {{ include('track/_delete_form.html.twig') }}
+    {% endif %}
 
-    <a href="{{ path('track_edit', {'id': track.id}) }}">edit</a>
+    {% if is_granted('ROLE_CUSTOMER') %}
+        <audio src="/music{{ asset(track.file) }}" preload="auto"></audio>
+        {% else %}
+            <div>
+                <a href="{{ path('register') }}">Inscrivez-vous pour écouter le morceau !</a>
+            </div>
+    {% endif %}
 
-    {{ include('track/_delete_form.html.twig') }}
-{#    <audio src={{ asset('music/lasgo_out_of_my_mind.mp3') }} preload="auto" />#}
-    <audio src=/music{{ asset(track.file) }} preload="auto" />
     <script>
         audiojs.events.ready(function() {
-            var as = audiojs.createAll();
+            audiojs.createAll();
         });
     </script>
+
 {% endblock %}

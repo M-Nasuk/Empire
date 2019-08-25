@@ -46,7 +46,7 @@ class Album
 
     public function __toString()
     {
-        return (string) $this->id;
+        return $this->name;
     }
 
     public function getId(): ?int

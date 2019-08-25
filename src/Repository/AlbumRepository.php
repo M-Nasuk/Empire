@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Album;
+use App\Entity\Artiste;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -19,6 +20,30 @@ class AlbumRepository extends ServiceEntityRepository
         parent::__construct($registry, Album::class);
     }
 
+    public function albumsByArtist(Artiste $artiste)
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a.id', 'a.name', 'a.picture')
+            ->where('a.artiste = :id')
+            ->setParameter('id', $artiste->getId())
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function albumArtist(Album $album, Artiste $artiste)
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.artiste = :artid')
+            ->andWhere('a.id = :albid')
+            ->setParameters([
+                'artid' => $artiste->getId(),
+                'albid' => $album->getId()
+            ])
+            ->getQuery()
+            ->getResult()
+        ;
+    }
     // /**
     //  * @return Album[] Returns an array of Album objects
     //  */

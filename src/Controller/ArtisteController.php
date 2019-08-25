@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Album;
 use App\Entity\Artiste;
+use App\Entity\Track;
 use App\Form\ArtisteType;
+use App\Repository\AlbumRepository;
 use App\Repository\ArtisteRepository;
+use App\Repository\TrackRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,6 +59,7 @@ class ArtisteController extends AbstractController
 
     /**
      * @Route("/json", name="json", methods={"GET","POST"})
+     * @param ArtisteRepository $artisteRepository
      * @return JsonResponse
      */
     public function jsonArtiste(ArtisteRepository $artisteRepository)
@@ -67,19 +72,22 @@ class ArtisteController extends AbstractController
             ];
         }, $rawData);
         $response = new JsonResponse(['data' => $data]);
-//        var_dump($response); die;
         return $response;
     }
 
     /**
      * @Route("/{id}", name="artiste_show", methods={"GET"})
      * @param Artiste $artiste
+     * @param AlbumRepository $albumRepository
+     * @param TrackRepository $trackRepository
      * @return Response
      */
-    public function show(Artiste $artiste): Response
+    public function show(Artiste $artiste, AlbumRepository $albumRepository, TrackRepository $trackRepository): Response
     {
         return $this->render('artiste/show.html.twig', [
             'artiste' => $artiste,
+            'albums' => $albumRepository->albumsByArtist($artiste),
+            'tracks' => $trackRepository->tracksByArtist($artiste)
         ]);
     }
 
@@ -123,6 +131,53 @@ class ArtisteController extends AbstractController
         }
 
         return $this->redirectToRoute('artiste_index');
+    }
+
+    /**
+     * @Route("/{id}/{album}", name="artiste_album", methods={"GET"})
+     * @param Album $album
+     * @param Artiste $artiste
+     * @param AlbumRepository $albumRepository
+     * @param TrackRepository $trackRepository
+     * @return Response
+     */
+    public function album(Album $album, Artiste $artiste, AlbumRepository $albumRepository, TrackRepository $trackRepository): Response
+    {
+        return $this->render('album/show.html.twig', [
+            'artiste' => $artiste,
+            'album' => $albumRepository->albumArtist($album, $artiste)[0],
+            'tracks' => $trackRepository->tracksByAlbum($album)
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/0/{track}", name="artiste_track", methods={"GET"})
+     * @param Artiste $artiste
+     * @param Track $track
+     * @return Response
+     */
+    public function track(Artiste $artiste, Track $track): Response
+    {
+        return $this->render('track/show.html.twig', [
+            'artiste' => $artiste,
+            'track' => $track
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/{album}/{track}", name="artiste_album_track", methods={"GET"})
+     * @param Artiste $artiste
+     * @param Track $track
+     * @param AlbumRepository $albumRepository
+     * @return Response
+     */
+    public function albumTrack(Artiste $artiste, Track $track, AlbumRepository $albumRepository): Response
+    {
+        return $this->render('track/show.html.twig', [
+            'artiste' => $artiste,
+            'album' => $track->getAlbum() ? $albumRepository->find($track->getAlbum()) : null,
+            'track' => $track
+        ]);
     }
 
 
