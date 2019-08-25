@@ -24,7 +24,7 @@ class RegisterListener
     public function sendMailToUser()
     {
         $message = (new Swift_Message('Hello'))
-            ->setFrom('ok@test.fr')
+            ->setFrom('me@test.fr')
             ->setTo($this->adminMail)
             ->setBody('Here is the message itself');
 
