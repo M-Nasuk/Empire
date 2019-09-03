@@ -40,12 +40,17 @@ class TrackController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
-
-            if (isset($form['file'])) {
+            var_dump($form['file']->getData());
+            if (isset($form['file']) && $form['file']->getData() !== null) {
                 $file = $form['file']->getData();
                 $name = $form['name']->getData();
                 $newFile = $fileUploader->upload($file, $name);
                 $track->setFile($newFile);
+            }
+
+            if (isset($form['url']) && $form['url']->getData() !== null) {
+                $url = $form['url']->getData();
+                $url;
             }
             
             $entityManager->persist($track);
